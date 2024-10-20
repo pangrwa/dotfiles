@@ -44,8 +44,10 @@
   - `<leader>rn`: smart rename (for refactoring?)
 - `trouble.nvim`: configuration for error tooling (`<leader>x*`)
 - `formatting.nvim`: configuratio for formatter
+  - for `cpp` code, I use `clang-format`, for every project directory you can create a `.clang_format` file that standardises the formatter
 - `linting.lua`: configuration for my linter
 - `lazygit.lua`: lazygit GUI
+- `dap.lua`: debug adapter protocol
 
 # Possible future extensions that I came across that seems kinda cool
 
