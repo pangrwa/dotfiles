@@ -1,0 +1,13 @@
+shell = "/usr/bin/zsh"
+
+theme = catppuccin-macchiato
+gtk-titlebar = false
+gtk-tabs-location = top
+# gtk-wide-tabs = false
+
+gtk-custom-css = tab-style.css
+
+# Keybinds
+keybind = ctrl+t=toggle_tab_overview
+
+
