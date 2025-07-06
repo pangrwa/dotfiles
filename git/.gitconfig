@@ -1,5 +1,7 @@
 [user]
 	name = Rui Wei
-
+	email = pangrwa@gmail.com
 [init]
 	defaultBranch = main
+[core]
+	editor = vim
