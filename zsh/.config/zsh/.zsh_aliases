@@ -1,0 +1,2 @@
+alias clip="xclip -selection clipboard"
+alias lsa="ls -lart"

@@ -1,6 +1,6 @@
-shell = "/usr/bin/zsh"
+#theme = catppuccin-macchiato
+theme = "light:catppuccin-latte,dark:catppuccin-macchiato"
 
-theme = catppuccin-macchiato
 gtk-titlebar = false
 gtk-tabs-location = top
 # gtk-wide-tabs = false
@@ -9,5 +9,7 @@ gtk-custom-css = tab-style.css
 
 # Keybinds
 keybind = ctrl+t=toggle_tab_overview
+
+# ctr-shift-j to open scrollbackfile
 
 

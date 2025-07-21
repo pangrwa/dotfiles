@@ -58,3 +58,8 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=/home/ruiwei/.config/starship/starship.toml
 
+
+# aliases
+if [ -f "$XDG_CONFIG_HOME/zsh/.zsh_aliases" ]; then
+  source "$XDG_CONFIG_HOME/zsh/.zsh_aliases"
+fi
