@@ -16,9 +16,17 @@ return {
         mappings = {
           i = {
             ["<C-k>"] = actions.move_selection_previous, -- move to prev result
-            ["<C-j>"] = actions.move_selection_next, -- move to next result
+            ["<C-j>"] = actions.move_selection_next,     -- move to next result
             ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
           },
+        },
+      },
+      pickers = {
+        find_files = {
+          -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+          -- find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
+          hidden = true,
+          -- no_ignore = true -- this will not respect .gitignore - I would rather you "unignore" using .ignore file
         },
       },
     })
