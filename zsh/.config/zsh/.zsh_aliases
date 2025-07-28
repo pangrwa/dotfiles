@@ -1,2 +1,4 @@
 alias clip="xclip -selection clipboard"
 alias lsa="ls -lart"
+
+alias gtcd="cd /var/lib/apport/coredump"
