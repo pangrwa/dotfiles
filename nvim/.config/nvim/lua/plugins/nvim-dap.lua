@@ -35,32 +35,62 @@ return {
 
   config = function()
     local dap = require("dap")
-    dap.adapters.cppdbg = {
-      id = 'cppdbg',
-      type = "executable",
-      command =
-      "/home/ruiwei/.vscode/extensions/ms-vscode.cpptools-1.26.3-linux-x64/debugAdapters/bin/OpenDebugAD7", -- vscode wrapper of gdb works better with dap-ui
-    }
-    dap.configurations.cpp = {
-      {
-        name = "Launch file",
-        type = "cppdbg",
-        request = "launch",
-        program = function()
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-        end,
-        cwd = '${workspaceFolder}',
-        stopAtEntry = false,
-        setupCommands = {
-          {
-            text = '-enable-pretty-printing',
-            description = 'enable pretty printing',
-            ignoreFailures = false
+
+    local os_name = vim.loop.os_uname().sysname
+    local home = os.getenv("HOME")
+    local adapter_path
+
+    if os_name == "Linux" then
+      adapter_path = home .. "/.vscode/extensions/ms-vscode.cpptools-1.26.3-linux-x64/debugAdapters/bin/OpenDebugAD7"
+      dap.adapters.cppdbg = {
+        id = 'cppdbg',
+        type = "executable",
+        command = adapter_path -- vscode wrapper of gdb works better with dap-ui
+      }
+      dap.configurations.cpp = {
+        {
+          name = "Launch file",
+          type = "cppdbg",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          stopAtEntry = false,
+          setupCommands = {
+            {
+              text = '-enable-pretty-printing',
+              description = 'enable pretty printing',
+              ignoreFailures = false
+            },
           },
         },
+      }
+    elseif os_name == "Darwin" then
+      -- lldb adapter for macOS
+      dap.adapters.lldb = {
+        type = 'executable',
+        command = '/Library/Developer/CommandLineTools/usr/bin/lldb-dap',
+        name = 'lldb'
+      }
 
-      },
-    }
+      dap.configurations.cpp = {
+        {
+          name = "Launch with lldb",
+          type = "lldb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          stopOnEntry = false,
+          args = {},
+        }
+      }
+    else
+      vim.notify("Unsupported OS for dap C++ config: " .. os_name, vim.log.levels.ERROR)
+    end
+
     -- These are some configs from LazyVim
     -- load mason-nvim-dap here, after all adapters have been setup
     -- if LazyVim.has("mason-nvim-dap.nvim") then
