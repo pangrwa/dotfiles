@@ -63,3 +63,8 @@ export STARSHIP_CONFIG=/home/ruiwei/.config/starship/starship.toml
 if [ -f "$XDG_CONFIG_HOME/zsh/.zsh_aliases" ]; then
   source "$XDG_CONFIG_HOME/zsh/.zsh_aliases"
 fi
+
+
+if [ -f "$XDG_CONFIG_HOME/zsh/.zsh_color" ]; then
+  source "$XDG_CONFIG_HOME/zsh/.zsh_color"
+fi

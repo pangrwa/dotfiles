@@ -1,0 +1,26 @@
+# this from the bashrc file 
+if [[ "$TERM" == xterm-color || "$TERM" == *-256color || "$TERM" == xterm-ghostty ]]; then
+    color_prompt=yes
+fi
+
+if [[ -n "$force_color_prompt" ]]; then
+    if command -v tput >/dev/null 2>&1 && tput setaf 1 &>/dev/null; then
+        color_prompt=yes
+    else
+        color_prompt=
+    fi
+fi
+
+if command -v dircolors >/dev/null 2>&1; then
+    if [[ -r ~/.dircolors ]]; then
+        eval "$(dircolors -b ~/.dircolors)"
+    else
+        eval "$(dircolors -b)"
+    fi
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
