@@ -5,3 +5,5 @@
 	defaultBranch = main
 [core]
 	editor = nvim
+[alias]
+  lga = log --oneline --graph --decorate --all
