@@ -11,6 +11,14 @@ return {
     local lspconfig = require("lspconfig")
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
+    -- for Java
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "java",
+      callback = function(args)
+        require 'plugins.lsp.jdtls.jdtls_setup'.setup()
+      end
+    })
+
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
