@@ -7,11 +7,15 @@ return {
       cpp = { "clang-format" },
       markdown = { "markdownlint-cli2" },
       ["markdown.mdx"] = { "markdownlint-cli2" },
+      ocaml = { "ocamlformat" },
     },
     formatters = {
       clang_format = {
         command = "clang-format",
         args = { "--style=file", '--fallback-style=LLVM' }
+      },
+      ocamlformat = {
+        command = "ocamlformat",
       }
     },
     format_on_save = {
