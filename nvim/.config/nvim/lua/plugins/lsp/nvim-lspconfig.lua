@@ -135,6 +135,19 @@ return {
       root_dir = lspconfig.util.root_pattern("*.opam", "esy.json", "package.json", ".git", "dune-project",
         "dune-workspace"),
     })
+
+
+    lspconfig.ts_ls.setup({
+      capabilities = capabilities,
+      cmd = { "typescript-language-server", "--stdio" },
+      filetypes = { "typescript", "typescriptreact", "typescript.tsx" }
+    })
+
+    lspconfig.pyright.setup({
+      capabilities = capabilities,
+      cmd = { "pyright-langserver", "--stdio" }, -- Explicit command if needed
+      filetypes = { "python" },                  -- Explicit filetype
+    })
   end
 
 }

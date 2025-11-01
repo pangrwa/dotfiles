@@ -6,7 +6,7 @@ return {
   build = ":TSUpdate",
   opts = {
     ensure_installed = {
-      "c", "lua", "vim", "vimdoc", "cmake", "python", "rust", "java", "cpp", "ocaml"
+      "c", "lua", "vim", "vimdoc", "cmake", "python", "rust", "java", "cpp", "ocaml", "typescript"
     },
     sync_install = false,
     auto_install = false,

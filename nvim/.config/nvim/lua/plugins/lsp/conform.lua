@@ -8,6 +8,8 @@ return {
       markdown = { "markdownlint-cli2" },
       ["markdown.mdx"] = { "markdownlint-cli2" },
       ocaml = { "ocamlformat" },
+      typescript = { "prettierd" },
+      typescriptreact = { "prettierd" }
     },
     formatters = {
       clang_format = {

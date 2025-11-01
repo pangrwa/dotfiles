@@ -6,7 +6,8 @@ return {
       "isort",
       "black",
       "clang-format",
-      "cmakelang"
+      "cmakelang",
+      "prettierd"
     }
   }
 }
