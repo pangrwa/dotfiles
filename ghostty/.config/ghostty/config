@@ -1,5 +1,5 @@
 #theme = catppuccin-macchiato
-theme = "light:catppuccin-latte,dark:catppuccin-macchiato"
+theme = "light:Catppuccin Latte,dark:Catppuccin Macchiato"
 
 gtk-titlebar = false
 gtk-tabs-location = top
@@ -13,3 +13,4 @@ keybind = ctrl+t=toggle_tab_overview
 # ctr-shift-j to open scrollbackfile
 
 
+keybind = shift+enter=text:\x1b\r
