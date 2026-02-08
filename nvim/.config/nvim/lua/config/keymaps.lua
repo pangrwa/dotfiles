@@ -52,3 +52,15 @@ vim.keymap.set("n", "<leader>t2", "2gt", { desc = "Go to tab 2" })
 for i = 1, 9 do
   vim.keymap.set("n", "<leader>t" .. i, i .. "gt", { desc = "Go to tab" .. i })
 end
+
+-- print file path
+-- Maps <Leader>fp to print the full file path
+vim.keymap.set('n', '<leader>np', function()
+  print(vim.fn.expand('%:p'))
+end, { desc = 'Print full file path' })
+
+-- Bonus: Maps <Leader>cp to copy path to clipboard
+vim.keymap.set('n', '<leader>nc', function()
+  vim.fn.setreg('+', vim.fn.expand('%:p'))
+  print("Path copied to clipboard!")
+end, { desc = 'Copy full file path' })

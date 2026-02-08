@@ -100,6 +100,8 @@ return {
       capabilities = capabilities,
       root_dir = function(fname)
         return require("lspconfig.util").root_pattern(
+          ".git",
+          "compile_commands.json",
           "CMakeLists.txt",
           "Makefile",
           "configure.ac",
