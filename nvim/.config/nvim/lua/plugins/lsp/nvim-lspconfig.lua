@@ -150,6 +150,17 @@ return {
       cmd = { "pyright-langserver", "--stdio" }, -- Explicit command if needed
       filetypes = { "python" },                  -- Explicit filetype
     })
+
+    lspconfig.rust_analyzer.setup({
+      capabilities = capabilities,
+      cmd = { "rust-analyzer" },
+      filetypes = { "rust" },
+      root_dir = lspconfig.util.root_pattern(
+        "Cargo.toml",
+        "rust-project.json",
+        ".git"
+      )
+    })
   end
 
 }

@@ -47,7 +47,7 @@ return {
         type = "executable",
         command = adapter_path -- vscode wrapper of gdb works better with dap-ui
       }
-      dap.configurations.cpp = {
+      local launch_file = {
         {
           name = "Launch file",
           type = "cppdbg",
@@ -78,6 +78,8 @@ return {
           end,
         },
       }
+      dap.configurations.cpp = launch_file
+      dap.configurations.c = launch_file
     elseif os_name == "Darwin" then
       -- lldb adapter for macOS
       dap.adapters.lldb = {
