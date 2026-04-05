@@ -8,7 +8,6 @@ return {
   },
   config = function(_, opts)
     local keymap = vim.keymap
-    local lspconfig = require("lspconfig")
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
     -- for Java
@@ -22,55 +21,47 @@ return {
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
-        -- Buffer local mappings.
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = { buffer = ev.buf, silent = true }
 
         -- set keybinds
         opts.desc = "Show LSP references"
-        keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
+        keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>", opts)
 
         opts.desc = "Show LSP definitions"
-        keymap.set("n", "<leader>ld", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
+        keymap.set("n", "<leader>ld", "<cmd>Telescope lsp_definitions<CR>", opts)
 
         opts.desc = "Show LSP implementations"
-        keymap.set("n", "<leader>li", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
+        keymap.set("n", "<leader>li", "<cmd>Telescope lsp_implementations<CR>", opts)
 
         opts.desc = "Show LSP type definitions"
-        keymap.set("n", "<leader>lt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
+        keymap.set("n", "<leader>lt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
 
         opts.desc = "Restart LSP"
-        keymap.set("n", "<leader><c-r>", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+        keymap.set("n", "<leader><c-r>", ":LspRestart<CR>", opts)
 
         opts.desc = "Go to declaration"
-        keymap.set("n", "<leader>lgd", vim.lsp.buf.declaration, opts) -- go to declaration
+        keymap.set("n", "<leader>lgd", vim.lsp.buf.declaration, opts)
 
-        -- You can press this toggle button again to move focus into the hover window
         opts.desc = "Show documentation for what is under cursor"
-        keymap.set("n", "<leader>ll", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
+        keymap.set("n", "<leader>ll", vim.lsp.buf.hover, opts)
 
         opts.desc = "Smart rename"
-        keymap.set("n", "<leader>lR", vim.lsp.buf.rename, opts) -- smart rename
+        keymap.set("n", "<leader>lR", vim.lsp.buf.rename, opts)
 
         opts.desc = "See available code actions"
-        keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
+        keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, opts)
 
         opts.desc = "Show buffer diagnostics"
-        keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+        keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
 
-        --opts.desc = "Show line diagnostics"
-        --keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
-
-        --opts.desc = "Go to previous diagnostic"
-        --keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
-
-        --opts.desc = "Go to next diagnostic"
-        --keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+        -- Server-specific keybinds
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+        if client and client.name == "clangd" then
+          opts.desc = "Switch between header and source"
+          keymap.set("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", opts)
+        end
       end,
     })
-
-    -- used to enable autocompletion (assign to every lsp server config)
-    local capabilities = cmp_nvim_lsp.default_capabilities()
 
     -- Change the Diagnostic symbols in the sign column (gutter)
     local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
@@ -79,10 +70,26 @@ return {
       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
     end
 
+    local capabilities = cmp_nvim_lsp.default_capabilities()
+    
+    -- In Neovim 0.11+, we can use vim.lsp.config to define servers.
+    -- nvim-lspconfig still provides the configs (cmd, filetypes, root_dir) 
+    -- but we should avoid require('lspconfig') if possible to avoid the warning.
+    
+    -- Helper to get lspconfig defaults without triggering the warning (accessing the configs table directly)
+    local configs = require('lspconfig.configs')
 
-    -- customise some of the LSP clients
-    lspconfig.lua_ls.setup({
-      capabilities = capabilities,
+    local function setup_server(name, custom_config)
+      local config = configs[name] and vim.deepcopy(configs[name].default_config) or {}
+      config.capabilities = capabilities
+      if custom_config then
+        config = vim.tbl_deep_extend("force", config, custom_config)
+      end
+      vim.lsp.config(name, config)
+      vim.lsp.enable(name)
+    end
+
+    setup_server('lua_ls', {
       settings = {
         Lua = {
           diagnostics = {
@@ -92,28 +99,7 @@ return {
       },
     })
 
-    lspconfig.clangd.setup({
-      on_attach = function(client, bufnr)
-        local opts = { noremap = true, silent = true, buffer = bufnr }
-        vim.keymap.set("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", opts)
-      end,
-      capabilities = capabilities,
-      root_dir = function(fname)
-        return require("lspconfig.util").root_pattern(
-          ".git",
-          "compile_commands.json",
-          "CMakeLists.txt",
-          "Makefile",
-          "configure.ac",
-          "configure.in",
-          "config.h.in",
-          "meson.build",
-          "meson_options.txt",
-          "build.ninja"
-        )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
-          fname
-        ) or require("lspconfig.util").find_git_ancestor(fname)
-      end,
+    setup_server('clangd', {
       cmd = {
         "clangd",
         "--background-index",
@@ -130,37 +116,9 @@ return {
       },
     })
 
-    lspconfig.ocamllsp.setup({
-      capabilities = capabilities,
-      cmd = { "ocamllsp" },
-      filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
-      root_dir = lspconfig.util.root_pattern("*.opam", "esy.json", "package.json", ".git", "dune-project",
-        "dune-workspace"),
-    })
-
-
-    lspconfig.ts_ls.setup({
-      capabilities = capabilities,
-      cmd = { "typescript-language-server", "--stdio" },
-      filetypes = { "typescript", "typescriptreact", "typescript.tsx" }
-    })
-
-    lspconfig.pyright.setup({
-      capabilities = capabilities,
-      cmd = { "pyright-langserver", "--stdio" }, -- Explicit command if needed
-      filetypes = { "python" },                  -- Explicit filetype
-    })
-
-    lspconfig.rust_analyzer.setup({
-      capabilities = capabilities,
-      cmd = { "rust-analyzer" },
-      filetypes = { "rust" },
-      root_dir = lspconfig.util.root_pattern(
-        "Cargo.toml",
-        "rust-project.json",
-        ".git"
-      )
-    })
+    setup_server('ocamllsp')
+    setup_server('ts_ls')
+    setup_server('pyright')
+    setup_server('rust_analyzer')
   end
-
 }
