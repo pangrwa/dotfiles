@@ -2,14 +2,15 @@ return {
   'stevearc/conform.nvim',
   opts = {
     formatters_by_ft = {
-      python = { "isort", "black" },
+      -- python = { "isort", "black" },
       lua = { "stylua " },
       cpp = { "clang-format" },
       markdown = { "markdownlint-cli2" },
       ["markdown.mdx"] = { "markdownlint-cli2" },
       ocaml = { "ocamlformat" },
       typescript = { "prettierd" },
-      typescriptreact = { "prettierd" }
+      typescriptreact = { "prettierd" },
+      rust = { "rustfmt" },
     },
     formatters = {
       clang_format = {
@@ -18,7 +19,10 @@ return {
       },
       ocamlformat = {
         command = "ocamlformat",
-      }
+      },
+      rustfmt = {
+        prepend_args = { "--edition", "2024" },
+      },
     },
     format_on_save = {
       lsp_fallback = true,

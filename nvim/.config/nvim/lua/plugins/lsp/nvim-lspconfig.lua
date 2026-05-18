@@ -19,6 +19,14 @@ return {
       end
     })
 
+    -- for Rust
+    vim.keymap.set("n", "<leader>ri", function()
+      vim.lsp.buf.code_action({
+        context = { only = { "source.organizeImports" } },
+        apply = true,
+      })
+    end, { desc = "Organize Rust imports" })
+
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
@@ -51,6 +59,7 @@ return {
 
         opts.desc = "Smart rename"
         keymap.set("n", "<leader>lR", vim.lsp.buf.rename, opts) -- smart rename
+
 
         opts.desc = "See available code actions"
         keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
@@ -117,9 +126,9 @@ return {
       cmd = {
         "clangd",
         "--background-index",
-        "--clang-tidy",
+        -- "--clang-tidy",
         "--header-insertion=iwyu",
-        "--completion-style=detailed",
+        -- "--completion-style=detailed",
         "--function-arg-placeholders",
         "--fallback-style=llvm",
       },
@@ -149,6 +158,29 @@ return {
       capabilities = capabilities,
       cmd = { "pyright-langserver", "--stdio" }, -- Explicit command if needed
       filetypes = { "python" },                  -- Explicit filetype
+    })
+
+    -- lspconfig.rust_analyzer.setup({
+    --   capabilities = capabilities,
+    --   filetypes = { "rust" }
+    -- })
+
+
+
+    local util = require("lspconfig.util")
+
+    lspconfig.rust_analyzer.setup({
+      cmd = { "/home/rui-wei/.cargo/bin/rust-analyzer" },
+      root_dir = util.root_pattern("Cargo.toml", "rust-project.json"), -- avoid monorepo root
+      capabilities = capabilities,
+      filetypes = { "rust" },
+      settings = {
+        ["rust-analyzer"] = {
+          cachePriming = { enable = false },
+          -- cargo = { allFeatures = false, buildScripts = { enable = false } },
+          -- procMacro = { enable = false },
+        },
+      },
     })
   end
 

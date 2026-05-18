@@ -2,3 +2,19 @@ alias clip="xclip -selection clipboard"
 alias lsa="ls -lart"
 
 alias gtcd="cd /var/lib/apport/coredump"
+
+e4ssh() {
+  if [ "$#" -ne 4 ]; then
+    echo "Usage: e4ssh <service> <region> <alphabet> <number>"
+    return 1
+  fi
+
+  local service=$1
+  local region=$2
+  local alphabet=$3
+  local number=$4
+
+  ssh ubuntu@${service}-${region}-${alphabet}-${number}.crypto
+}
+
+alias nvim='nvim --appimage-extract-and-run'

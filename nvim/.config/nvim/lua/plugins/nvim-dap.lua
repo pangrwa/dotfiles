@@ -41,7 +41,8 @@ return {
     local adapter_path
 
     if os_name == "Linux" then
-      adapter_path = home .. "/.vscode/extensions/ms-vscode.cpptools-1.29.3-linux-x64/debugAdapters/bin/OpenDebugAD7"
+      adapter_path = home ..
+          "/.vscode/extensions/ms-vscode.cpptools-1.32.2-linux-x64/debugAdapters/bin/OpenDebugAD7"
       dap.adapters.cppdbg = {
         id = 'cppdbg',
         type = "executable",
@@ -75,6 +76,30 @@ return {
           cwd = '${workspaceFolder}',
           program = function()
             return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+        },
+      }
+      dap.adapters.codelldb = {
+        type = "executable",
+        command = home .. "/.vscode/extensions/vadimcn.vscode-lldb-1.12.1/adapter/codelldb",
+      }
+
+      dap.configurations.rust = {
+        {
+          name = "Debug",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          stopOnEntry = false,
+          args = {},
+          initCommands = function()
+            local script_path = os.getenv("HOME") .. "/Documents/rust_prettifier_for_lldb.py"
+            return {
+              string.format('command script import "%s"', script_path)
+            }
           end,
         },
       }
